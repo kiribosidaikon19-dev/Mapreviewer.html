@@ -62,12 +62,15 @@ export function LocationMap({
       <MapContainer 
         center={mapCenter} 
         zoom={13} 
+        minZoom={5}
+        maxBounds={[[20, 122], [46, 154]]}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
         />
         
         <MapClickHandler onMapClick={onAddLocationClick} />
