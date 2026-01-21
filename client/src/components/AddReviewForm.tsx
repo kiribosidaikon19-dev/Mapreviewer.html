@@ -22,12 +22,12 @@ export function AddReviewForm({ locationId }: AddReviewFormProps) {
   if (!isAuthenticated) {
     return (
       <div className="p-6 rounded-xl bg-muted/30 border border-border text-center">
-        <h4 className="font-semibold text-foreground mb-2">Have you visited?</h4>
+        <h4 className="font-semibold text-foreground mb-2">訪れたことがありますか？</h4>
         <p className="text-sm text-muted-foreground mb-4">
-          Log in to share your experience and help others discover great places.
+          サインインして体験を共有し、他の人が素晴らしい場所を見つけるのを手伝いましょう。
         </p>
         <Button variant="outline" asChild>
-          <a href="/api/login">Log in to Review</a>
+          <a href="/api/login">サインインしてレビューを書く</a>
         </Button>
       </div>
     );
@@ -51,7 +51,7 @@ export function AddReviewForm({ locationId }: AddReviewFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-5 rounded-xl border border-border bg-card shadow-sm">
       <div className="space-y-2">
-        <Label>Your Rating</Label>
+        <Label>評価</Label>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
@@ -76,10 +76,10 @@ export function AddReviewForm({ locationId }: AddReviewFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="comment">Comment</Label>
+        <Label htmlFor="comment">コメント</Label>
         <Textarea
           id="comment"
-          placeholder="Tell us about your experience..."
+          placeholder="あなたの体験を教えてください..."
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           className="min-h-[100px] resize-none"
@@ -94,10 +94,10 @@ export function AddReviewForm({ locationId }: AddReviewFormProps) {
         {createReview.isPending ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Posting...
+            投稿中...
           </>
         ) : (
-          "Post Review"
+          "レビューを投稿"
         )}
       </Button>
     </form>

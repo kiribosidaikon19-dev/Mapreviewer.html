@@ -38,7 +38,7 @@ export default function Home() {
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="text-muted-foreground font-medium animate-pulse">Loading Map...</p>
+          <p className="text-muted-foreground font-medium animate-pulse">地図を読み込んでいます...</p>
         </div>
       </div>
     );
@@ -51,10 +51,10 @@ export default function Home() {
         {/* Logo / Brand */}
         <div className="pointer-events-auto bg-background/80 backdrop-blur-md border border-border/50 rounded-2xl shadow-lg px-6 py-3">
           <h1 className="text-xl md:text-2xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            MapReview
+            マップレビュー
           </h1>
           <p className="text-xs text-muted-foreground hidden md:block">
-            Discover & share hidden gems
+            隠れた名所を見つけて共有しましょう
           </p>
         </div>
 
@@ -71,16 +71,16 @@ export default function Home() {
                     </AvatarFallback>
                   </Avatar>
                   <span className="font-medium hidden sm:inline-block">
-                    {user?.firstName || "User"}
+                    {user?.firstName || "ユーザー"}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>アカウント設定</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => logout()}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <span>ログアウト</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -88,7 +88,7 @@ export default function Home() {
             <Button asChild className="rounded-full h-12 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
               <a href="/api/login">
                 <LogIn className="mr-2 h-4 w-4" />
-                Sign In
+                サインイン
               </a>
             </Button>
           )}

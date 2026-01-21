@@ -90,7 +90,7 @@ export function LocationMap({
                   className="w-full h-8 text-xs"
                   onClick={() => onSelectLocation(loc.id)}
                 >
-                  View Details
+                  詳細を表示
                 </Button>
               </div>
             </Popup>
@@ -101,7 +101,7 @@ export function LocationMap({
       {/* Floating Action Button for hint */}
       <div className="absolute top-4 left-4 z-[400] bg-card/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-border/50 text-xs font-medium text-foreground flex items-center gap-2 pointer-events-none">
         <MapPin className="h-3 w-3 text-primary" />
-        Click anywhere on the map to add a location
+        地図上のどこかをクリックして場所を追加
       </div>
     </div>
   );

@@ -59,7 +59,7 @@ export function LocationSidebar({ locationId, onClose }: LocationSidebarProps) {
             <>
               {/* Description */}
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">About</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">概要</h3>
                 <p className="text-foreground/90 leading-relaxed text-lg font-light">
                   {locationDetails.description}
                 </p>
@@ -71,7 +71,7 @@ export function LocationSidebar({ locationId, onClose }: LocationSidebarProps) {
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold font-display flex items-center gap-2">
-                    Reviews 
+                    レビュー
                     <span className="text-sm font-normal text-muted-foreground font-sans bg-muted px-2 py-0.5 rounded-full">
                       {locationDetails.reviews?.length || 0}
                     </span>

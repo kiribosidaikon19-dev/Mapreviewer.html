@@ -13,8 +13,8 @@ export function ReviewList({ reviews }: ReviewListProps) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground bg-muted/30 rounded-xl border border-dashed border-border">
         <Star className="h-8 w-8 mb-3 opacity-20" />
-        <p className="font-medium">No reviews yet</p>
-        <p className="text-sm">Be the first to share your experience!</p>
+        <p className="font-medium">レビューがまだありません</p>
+        <p className="text-sm">あなたの体験を最初に共有しましょう！</p>
       </div>
     );
   }

@@ -63,15 +63,15 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Sign in Required</DialogTitle>
+            <DialogTitle>サインインが必要です</DialogTitle>
             <DialogDescription>
-              Please sign in to add a new location to the map.
+              新しい場所を地図に追加するには、サインインしてください。
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-3 pt-4">
-            <Button variant="outline" onClick={onClose}>Cancel</Button>
+            <Button variant="outline" onClick={onClose}>キャンセル</Button>
             <Button asChild>
-              <a href="/api/login">Sign In</a>
+              <a href="/api/login">サインイン</a>
             </Button>
           </div>
         </DialogContent>
@@ -83,9 +83,9 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Location</DialogTitle>
+          <DialogTitle>新しい場所を追加</DialogTitle>
           <DialogDescription>
-            Pin a new interesting spot on the map.
+            地図上に新しいおすすめスポットを登録しましょう。
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -95,9 +95,9 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>名前</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Hidden Coffee Shop" {...field} />
+                    <Input placeholder="例：隠れ家カフェ" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -108,10 +108,10 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>説明</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="What makes this place special?" 
+                      placeholder="この場所の魅力を教えてください" 
                       className="resize-none"
                       {...field} 
                     />
@@ -126,7 +126,7 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
                 name="latitude"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Latitude</FormLabel>
+                    <FormLabel>緯度</FormLabel>
                     <FormControl>
                       <Input disabled {...field} value={field.value?.toFixed(6)} />
                     </FormControl>
@@ -138,7 +138,7 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
                 name="longitude"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Longitude</FormLabel>
+                    <FormLabel>経度</FormLabel>
                     <FormControl>
                       <Input disabled {...field} value={field.value?.toFixed(6)} />
                     </FormControl>
@@ -148,11 +148,11 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
             </div>
             <div className="flex justify-end gap-3 pt-4">
               <Button type="button" variant="ghost" onClick={onClose}>
-                Cancel
+                キャンセル
               </Button>
               <Button type="submit" disabled={createLocation.isPending}>
                 {createLocation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Location
+                場所を作成
               </Button>
             </div>
           </form>
