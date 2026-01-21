@@ -55,7 +55,7 @@ export function LocationMap({
   const selectedLocation = locations.find(l => l.id === selectedLocationId);
   const mapCenter: [number, number] = selectedLocation 
     ? [selectedLocation.latitude, selectedLocation.longitude] 
-    : [51.505, -0.09]; // Default: London
+    : [37.3989, 140.3881]; // Koriyama City, Fukushima, Japan
 
   return (
     <div className="w-full h-full relative z-0">
