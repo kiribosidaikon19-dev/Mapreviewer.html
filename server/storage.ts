@@ -69,13 +69,13 @@ export class DatabaseStorage implements IStorage {
     return { ...location, reviews: formattedReviews };
   }
 
-  async createLocation(insertLocation: InsertLocation): Promise<Location> {
+  async createLocation(insertLocation: any): Promise<Location> {
     const [location] = await db.insert(locations).values(insertLocation).returning();
     return location;
   }
 
   // Reviews
-  async createReview(insertReview: InsertReview): Promise<Review> {
+  async createReview(insertReview: any): Promise<Review> {
     const [review] = await db.insert(reviews).values(insertReview).returning();
     return review;
   }

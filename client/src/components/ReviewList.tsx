@@ -31,9 +31,8 @@ export function ReviewList({ reviews }: ReviewListProps) {
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8 border border-border">
-                  <AvatarImage src={review.user.profileImageUrl || undefined} />
                   <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                    {review.user.firstName?.[0] || review.user.email?.[0] || "?"}
+                    {review.user.username?.[0]?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
