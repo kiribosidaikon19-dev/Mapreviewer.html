@@ -26,9 +26,6 @@ export function AddReviewForm({ locationId }: AddReviewFormProps) {
         <p className="text-sm text-muted-foreground mb-4">
           サインインして体験を共有し、他の人が素晴らしい場所を見つけるのを手伝いましょう。
         </p>
-        <Button variant="outline" asChild>
-          <a href="/api/login">サインインしてレビューを書く</a>
-        </Button>
       </div>
     );
   }

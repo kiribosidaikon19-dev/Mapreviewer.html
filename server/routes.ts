@@ -3,15 +3,64 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
-import { setupAuth, registerAuthRoutes, isAuthenticated } from "./replit_integrations/auth";
+import session from "express-session";
+import MemoryStoreFactory from "memorystore";
+
+const MemoryStore = MemoryStoreFactory(session);
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Setup Auth
-  await setupAuth(app);
-  registerAuthRoutes(app);
+  // Setup Simple Session Auth
+  app.use(
+    session({
+      cookie: { maxAge: 86400000 },
+      store: new MemoryStore({
+        checkPeriod: 86400000,
+      }),
+      resave: false,
+      saveUninitialized: false,
+      secret: "simple-secret",
+    })
+  );
+
+  // Simple Auth Routes
+  app.post("/api/login", async (req, res) => {
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ message: "Username is required" });
+
+    let user = await storage.getUserByUsername(username);
+    if (!user) {
+      user = await storage.createUser({ username });
+    }
+
+    (req.session as any).userId = user.id;
+    res.json(user);
+  });
+
+  app.get("/api/auth/user", async (req, res) => {
+    const userId = (req.session as any).userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const user = await storage.getUser(userId);
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+    res.json(user);
+  });
+
+  app.post("/api/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) return res.status(500).json({ message: "Failed to logout" });
+      res.json({ message: "Logged out" });
+    });
+  });
+
+  // Auth Middleware
+  const isAuthenticated = (req: any, res: any, next: any) => {
+    if (!req.session.userId) return res.status(401).json({ message: "Unauthorized" });
+    next();
+  };
 
   // Locations
   app.get(api.locations.list.path, async (req, res) => {
@@ -31,11 +80,10 @@ export async function registerRoutes(
 
   app.post(api.locations.create.path, isAuthenticated, async (req, res) => {
     try {
-      // Force createdBy to current user
-      const user = req.user as any;
+      const userId = (req.session as any).userId;
       const input = api.locations.create.input.parse({
         ...req.body,
-        createdBy: user.claims.sub,
+        createdBy: userId,
       });
 
       const location = await storage.createLocation(input);
@@ -47,7 +95,6 @@ export async function registerRoutes(
           field: err.errors[0].path.join('.'),
         });
       }
-      console.error(err);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -55,7 +102,7 @@ export async function registerRoutes(
   // Reviews
   app.post(api.reviews.create.path, isAuthenticated, async (req, res) => {
     try {
-      const user = req.user as any;
+      const userId = (req.session as any).userId;
       const locationId = Number(req.params.locationId);
       
       if (isNaN(locationId)) return res.status(400).json({ message: "Invalid location ID" });
@@ -63,7 +110,7 @@ export async function registerRoutes(
       const input = api.reviews.create.input.parse({
         ...req.body,
         locationId: locationId,
-        userId: user.claims.sub,
+        userId: userId,
       });
 
       const review = await storage.createReview(input);
@@ -75,17 +122,9 @@ export async function registerRoutes(
           field: err.errors[0].path.join('.'),
         });
       }
-      console.error(err);
       res.status(500).json({ message: "Internal server error" });
     }
   });
-
-  // Seed Data (if empty)
-  // We can do a quick check and seed if no locations exist
-  // BUT we need a user ID for createdBy. 
-  // Since we rely on Replit Auth, we don't have a guaranteed user ID until someone logs in.
-  // We'll skip auto-seeding connected to users for now, or just seed with a placeholder if needed.
-  // Actually, let's just leave it empty. The user can add locations.
 
   return httpServer;
 }

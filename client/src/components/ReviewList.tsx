@@ -2,6 +2,7 @@ import { type Review, type User } from "@shared/schema";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { ja } from "date-fns/locale";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ReviewListProps {
@@ -37,10 +38,10 @@ export function ReviewList({ reviews }: ReviewListProps) {
                 </Avatar>
                 <div>
                   <p className="text-sm font-semibold text-foreground">
-                    {review.user.firstName} {review.user.lastName}
+                    {review.user.username}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {review.createdAt && formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
+                    {review.createdAt && formatDistanceToNow(new Date(review.createdAt), { addSuffix: true, locale: ja })}
                   </p>
                 </div>
               </div>

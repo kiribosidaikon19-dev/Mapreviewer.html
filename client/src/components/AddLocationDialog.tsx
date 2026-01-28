@@ -70,9 +70,6 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
           </DialogHeader>
           <div className="flex justify-end gap-3 pt-4">
             <Button variant="outline" onClick={onClose}>キャンセル</Button>
-            <Button asChild>
-              <a href="/api/login">サインイン</a>
-            </Button>
           </div>
         </DialogContent>
       </Dialog>

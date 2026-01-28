@@ -1,10 +1,13 @@
-import { pgTable, text, serial, integer, doublePrecision, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, doublePrecision, timestamp, boolean, varchar, jsonb, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { relations } from "drizzle-orm";
-import { users } from "./models/auth";
+import { relations, sql } from "drizzle-orm";
 
-export * from "./models/auth";
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  username: text("username").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
 
 export const locations = pgTable("locations", {
   id: serial("id").primaryKey(),
@@ -46,7 +49,10 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
 
 export const insertLocationSchema = createInsertSchema(locations).omit({ id: true, createdAt: true, createdBy: true });
 export const insertReviewSchema = createInsertSchema(reviews).omit({ id: true, createdAt: true, userId: true, locationId: true });
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Location = typeof locations.$inferSelect;
 export type InsertLocation = z.infer<typeof insertLocationSchema>;
 export type Review = typeof reviews.$inferSelect;

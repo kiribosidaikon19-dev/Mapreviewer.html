@@ -18,19 +18,33 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Home() {
   const { data: locations = [], isLoading } = useLocations();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, login, isLoggingIn } = useAuth();
   
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newLocationCoords, setNewLocationCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+  const [username, setUsername] = useState("");
 
   const handleLocationSelect = (id: number) => {
     setSelectedLocationId(id);
   };
 
   const handleMapClick = (lat: number, lng: number) => {
+    if (!isAuthenticated) {
+      setIsLoginDialogOpen(true);
+      return;
+    }
     setNewLocationCoords({ lat, lng });
     setIsAddDialogOpen(true);
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!username.trim()) return;
+    await login(username);
+    setIsLoginDialogOpen(false);
+    setUsername("");
   };
 
   if (isLoading) {
@@ -65,13 +79,12 @@ export default function Home() {
               <DropdownMenuTrigger asChild>
                 <Button variant="secondary" className="rounded-full pl-2 pr-4 h-12 shadow-lg border-border/50">
                   <Avatar className="h-8 w-8 mr-2 border border-border">
-                    <AvatarImage src={user?.profileImageUrl || undefined} />
                     <AvatarFallback className="bg-primary/10 text-primary">
-                      {user?.firstName?.[0] || "U"}
+                      {user?.username?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <span className="font-medium hidden sm:inline-block">
-                    {user?.firstName || "ユーザー"}
+                    {user?.username}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
@@ -85,11 +98,12 @@ export default function Home() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild className="rounded-full h-12 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
-              <a href="/api/login">
-                <LogIn className="mr-2 h-4 w-4" />
-                サインイン
-              </a>
+            <Button 
+              onClick={() => setIsLoginDialogOpen(true)}
+              className="rounded-full h-12 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all"
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              サインイン
             </Button>
           )}
         </div>
@@ -119,6 +133,30 @@ export default function Home() {
         onClose={() => setIsAddDialogOpen(false)}
         coordinates={newLocationCoords}
       />
+
+      {/* Login Dialog */}
+      <Dialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>サインイン</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleLogin} className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">ユーザー名</label>
+              <Input 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="ユーザー名を入力してください"
+                autoFocus
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoggingIn}>
+              {isLoggingIn && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              ログイン
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
