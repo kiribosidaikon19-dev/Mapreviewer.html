@@ -47,8 +47,8 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   }),
 }));
 
-export const insertLocationSchema = createInsertSchema(locations).omit({ id: true, createdAt: true, createdBy: true });
-export const insertReviewSchema = createInsertSchema(reviews).omit({ id: true, createdAt: true, userId: true, locationId: true });
+export const insertLocationSchema = createInsertSchema(locations).omit({ id: true, createdAt: true });
+export const insertReviewSchema = createInsertSchema(reviews).omit({ id: true, createdAt: true });
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 
 export type User = typeof users.$inferSelect;

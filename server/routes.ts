@@ -96,7 +96,7 @@ export async function registerRoutes(
           field: err.errors[0].path.join('.'),
         });
       }
-      res.status(500).json({ message: "Internal server error", detail: err instanceof Error ? err.message : String(err) });
+      res.status(500).json({ message: "Internal server error" });
     }
   });
 
@@ -117,6 +117,7 @@ export async function registerRoutes(
       const review = await storage.createReview(input);
       res.status(201).json(review);
     } catch (err) {
+      console.error("[Reviews Create Error]:", err);
       if (err instanceof z.ZodError) {
         return res.status(400).json({
           message: err.errors[0].message,
