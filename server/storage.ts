@@ -21,10 +21,10 @@ export interface IStorage {
   // Locations
   getLocations(): Promise<Location[]>;
   getLocation(id: number): Promise<(Location & { reviews: (Review & { user: User })[] }) | undefined>;
-  createLocation(location: InsertLocation): Promise<Location>;
+  createLocation(location: any): Promise<Location>;
 
   // Reviews
-  createReview(review: InsertReview): Promise<Review>;
+  createReview(review: any): Promise<Review>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -69,13 +69,13 @@ export class DatabaseStorage implements IStorage {
     return { ...location, reviews: formattedReviews };
   }
 
-  async createLocation(insertLocation: InsertLocation): Promise<Location> {
+  async createLocation(insertLocation: any): Promise<Location> {
     const [location] = await db.insert(locations).values(insertLocation).returning();
     return location;
   }
 
   // Reviews
-  async createReview(insertReview: InsertReview): Promise<Review> {
+  async createReview(insertReview: any): Promise<Review> {
     const [review] = await db.insert(reviews).values(insertReview).returning();
     return review;
   }

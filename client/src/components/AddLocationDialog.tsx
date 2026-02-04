@@ -50,11 +50,16 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
   });
 
   const onSubmit = (data: InsertLocation) => {
+    console.log("Submitting location data:", data);
     createLocation.mutate(data, {
       onSuccess: () => {
+        console.log("Location created successfully");
         form.reset();
         onClose();
       },
+      onError: (error) => {
+        console.error("Location creation error detail:", error);
+      }
     });
   };
 

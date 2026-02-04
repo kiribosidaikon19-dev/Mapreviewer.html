@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, doublePrecision, timestamp, boolean, varchar, jsonb, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, doublePrecision, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations, sql } from "drizzle-orm";
@@ -47,8 +47,9 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   }),
 }));
 
-export const insertLocationSchema = createInsertSchema(locations).omit({ id: true, createdAt: true });
-export const insertReviewSchema = createInsertSchema(reviews).omit({ id: true, createdAt: true });
+// We omit createdBy and userId because they are injected on the server from the session
+export const insertLocationSchema = createInsertSchema(locations).omit({ id: true, createdAt: true, createdBy: true });
+export const insertReviewSchema = createInsertSchema(reviews).omit({ id: true, createdAt: true, userId: true, locationId: true });
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 
 export type User = typeof users.$inferSelect;

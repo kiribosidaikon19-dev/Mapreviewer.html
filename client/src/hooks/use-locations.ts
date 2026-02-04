@@ -57,14 +57,15 @@ export function useCreateLocation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.locations.list.path] });
       toast({
-        title: "Location Added",
-        description: "Your new location has been pinned to the map.",
+        title: "作成成功",
+        description: "新しい場所が地図に追加されました。",
       });
     },
     onError: (error) => {
+      console.error("Location creation error:", error);
       toast({
-        title: "Error",
-        description: error.message,
+        title: "作成失敗",
+        description: error.message || "場所の作成に失敗しました。入力内容を確認してください。",
         variant: "destructive",
       });
     },

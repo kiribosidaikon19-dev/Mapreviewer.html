@@ -81,12 +81,12 @@ export async function registerRoutes(
   app.post(api.locations.create.path, isAuthenticated, async (req, res) => {
     try {
       const userId = (req.session as any).userId;
-      const input = api.locations.create.input.parse({
-        ...req.body,
+      const input = api.locations.create.input.parse(req.body);
+
+      const location = await storage.createLocation({
+        ...input,
         createdBy: userId,
       });
-
-      const location = await storage.createLocation(input);
       res.status(201).json(location);
     } catch (err) {
       console.error("[Locations Create Error]:", err);
@@ -108,13 +108,13 @@ export async function registerRoutes(
       
       if (isNaN(locationId)) return res.status(400).json({ message: "Invalid location ID" });
 
-      const input = api.reviews.create.input.parse({
-        ...req.body,
+      const input = api.reviews.create.input.parse(req.body);
+
+      const review = await storage.createReview({
+        ...input,
         locationId: locationId,
         userId: userId,
       });
-
-      const review = await storage.createReview(input);
       res.status(201).json(review);
     } catch (err) {
       console.error("[Reviews Create Error]:", err);
