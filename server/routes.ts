@@ -89,13 +89,14 @@ export async function registerRoutes(
       const location = await storage.createLocation(input);
       res.status(201).json(location);
     } catch (err) {
+      console.error("[Locations Create Error]:", err);
       if (err instanceof z.ZodError) {
         return res.status(400).json({
           message: err.errors[0].message,
           field: err.errors[0].path.join('.'),
         });
       }
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Internal server error", detail: err instanceof Error ? err.message : String(err) });
     }
   });
 
