@@ -1,12 +1,14 @@
 import { type Location } from "@shared/schema";
-import { useLocation } from "@/hooks/use-locations";
+import { useLocation, useDeleteLocation } from "@/hooks/use-locations";
 import { ReviewList } from "./ReviewList";
 import { AddReviewForm } from "./AddReviewForm";
 import { Button } from "@/components/ui/button";
-import { X, MapPin, Navigation2, Star } from "lucide-react";
+import { X, MapPin, Navigation2, Star, Trash2, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/use-auth";
+import { useState } from "react";
 
 interface LocationSidebarProps {
   locationId: number | null;
@@ -15,8 +17,27 @@ interface LocationSidebarProps {
 
 export function LocationSidebar({ locationId, onClose }: LocationSidebarProps) {
   const { data: locationDetails, isLoading, error } = useLocation(locationId);
+  const { user } = useAuth();
+  const deleteLocation = useDeleteLocation();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   if (!locationId) return null;
+
+  const isCreator = user && locationDetails && user.id === locationDetails.createdBy;
+
+  const handleDelete = async () => {
+    if (!window.confirm("この場所を削除してもよろしいですか？関連するレビューもすべて削除されます。")) return;
+    
+    setIsDeleting(true);
+    try {
+      await deleteLocation.mutateAsync(locationId);
+      onClose();
+    } catch (e) {
+      // Error handled by mutation toast
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="absolute top-0 right-0 h-full w-full md:w-[450px] bg-background/95 backdrop-blur-md shadow-2xl border-l border-border z-[500] flex flex-col animate-in slide-in-from-right duration-300">
@@ -37,9 +58,22 @@ export function LocationSidebar({ locationId, onClose }: LocationSidebarProps) {
             )}
           </div>
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-muted">
-          <X className="h-5 w-5" />
-        </Button>
+        <div className="flex gap-2">
+          {isCreator && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleDelete} 
+              disabled={isDeleting}
+              className="rounded-full hover:bg-destructive/10 hover:text-destructive"
+            >
+              {isDeleting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+            </Button>
+          )}
+          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-muted">
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       {/* Content */}

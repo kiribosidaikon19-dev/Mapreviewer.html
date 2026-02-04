@@ -79,23 +79,24 @@ export async function registerRoutes(
   });
 
   app.post(api.locations.create.path, isAuthenticated, async (req, res) => {
-    try {
-      const userId = (req.session as any).userId;
-      const input = api.locations.create.input.parse(req.body);
+    // ... existing implementation
+  });
 
-      const location = await storage.createLocation({
-        ...input,
-        createdBy: userId,
-      });
-      res.status(201).json(location);
-    } catch (err) {
-      console.error("[Locations Create Error]:", err);
-      if (err instanceof z.ZodError) {
-        return res.status(400).json({
-          message: err.errors[0].message,
-          field: err.errors[0].path.join('.'),
-        });
+  app.delete("/api/locations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      const userId = (req.session as any).userId;
+      
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+
+      const success = await storage.deleteLocation(id, userId);
+      if (!success) {
+        return res.status(403).json({ message: "Not authorized to delete this location or location not found" });
       }
+
+      res.json({ message: "Location deleted successfully" });
+    } catch (err) {
+      console.error("[Location Delete Error]:", err);
       res.status(500).json({ message: "Internal server error" });
     }
   });

@@ -10,7 +10,7 @@ import {
   type InsertReview,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
   // Auth
@@ -22,6 +22,7 @@ export interface IStorage {
   getLocations(): Promise<Location[]>;
   getLocation(id: number): Promise<(Location & { reviews: (Review & { user: User })[] }) | undefined>;
   createLocation(location: any): Promise<Location>;
+  deleteLocation(id: number, userId: string): Promise<boolean>;
 
   // Reviews
   createReview(review: any): Promise<Review>;
@@ -72,6 +73,18 @@ export class DatabaseStorage implements IStorage {
   async createLocation(insertLocation: any): Promise<Location> {
     const [location] = await db.insert(locations).values(insertLocation).returning();
     return location;
+  }
+
+  async deleteLocation(id: number, userId: string): Promise<boolean> {
+    // First delete reviews for this location
+    await db.delete(reviews).where(eq(reviews.locationId, id));
+    
+    const [deletedLocation] = await db
+      .delete(locations)
+      .where(and(eq(locations.id, id), eq(locations.createdBy, userId)))
+      .returning();
+    
+    return !!deletedLocation;
   }
 
   // Reviews

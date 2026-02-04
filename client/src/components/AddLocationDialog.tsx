@@ -57,7 +57,7 @@ export function AddLocationDialog({ isOpen, onClose, coordinates }: AddLocationD
         form.reset();
         onClose();
       },
-      onError: (error) => {
+      onError: (error: Error) => {
         console.error("Location creation error detail:", error);
       }
     });
