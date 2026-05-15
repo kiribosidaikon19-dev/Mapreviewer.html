@@ -79,7 +79,25 @@ export async function registerRoutes(
   });
 
   app.post(api.locations.create.path, isAuthenticated, async (req, res) => {
-    // ... existing implementation
+    try {
+      const userId = (req.session as any).userId;
+      const input = api.locations.create.input.parse(req.body);
+
+      const location = await storage.createLocation({
+        ...input,
+        createdBy: userId,
+      });
+      res.status(201).json(location);
+    } catch (err) {
+      console.error("[Locations Create Error]:", err);
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 
   app.delete("/api/locations/:id", isAuthenticated, async (req, res) => {
