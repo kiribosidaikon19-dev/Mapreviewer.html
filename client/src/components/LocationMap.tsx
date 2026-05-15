@@ -23,6 +23,7 @@ interface LocationMapProps {
   selectedLocationId: number | null;
   onSelectLocation: (id: number) => void;
   onAddLocationClick: (lat: number, lng: number) => void;
+  flyToCoords?: { lat: number; lng: number } | null;
 }
 
 // Component to handle map clicks for adding new locations
@@ -35,14 +36,19 @@ function MapClickHandler({ onMapClick }: { onMapClick: (lat: number, lng: number
   return null;
 }
 
-// Component to fly to selected location
-function MapUpdater({ center }: { center: [number, number] | null }) {
+// Component to fly to selected location or search result
+function MapUpdater({ center, searchCoords }: { center: [number, number] | null; searchCoords: { lat: number; lng: number } | null | undefined }) {
   const map = useMap();
   useEffect(() => {
     if (center) {
       map.flyTo(center, 15, { duration: 1.5 });
     }
   }, [center, map]);
+  useEffect(() => {
+    if (searchCoords) {
+      map.flyTo([searchCoords.lat, searchCoords.lng], 14, { duration: 1.5 });
+    }
+  }, [searchCoords, map]);
   return null;
 }
 
@@ -50,7 +56,8 @@ export function LocationMap({
   locations, 
   selectedLocationId, 
   onSelectLocation,
-  onAddLocationClick 
+  onAddLocationClick,
+  flyToCoords,
 }: LocationMapProps) {
   const selectedLocation = locations.find(l => l.id === selectedLocationId);
   const mapCenter: [number, number] = selectedLocation 
@@ -74,7 +81,7 @@ export function LocationMap({
         />
         
         <MapClickHandler onMapClick={onAddLocationClick} />
-        <MapUpdater center={selectedLocation ? [selectedLocation.latitude, selectedLocation.longitude] : null} />
+        <MapUpdater center={selectedLocation ? [selectedLocation.latitude, selectedLocation.longitude] : null} searchCoords={flyToCoords} />
 
         {locations.map((loc) => (
           <Marker 

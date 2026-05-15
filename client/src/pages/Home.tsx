@@ -3,6 +3,7 @@ import { useLocations } from "@/hooks/use-locations";
 import { LocationMap } from "@/components/LocationMap";
 import { LocationSidebar } from "@/components/LocationSidebar";
 import { AddLocationDialog } from "@/components/AddLocationDialog";
+import { SearchBox } from "@/components/SearchBox";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Loader2, LogIn, LogOut, User as UserIcon } from "lucide-react";
@@ -32,6 +33,7 @@ export default function Home() {
   const [newLocationCoords, setNewLocationCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [username, setUsername] = useState("");
+  const [flyToCoords, setFlyToCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   const handleLocationSelect = (id: number) => {
     setSelectedLocationId(id);
@@ -79,6 +81,11 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Search Box */}
+        <div className="pointer-events-auto flex-1 max-w-sm mx-4 hidden sm:block">
+          <SearchBox onFlyTo={(lat, lng) => setFlyToCoords({ lat, lng })} />
+        </div>
+
         {/* User Menu */}
         <div className="pointer-events-auto">
           {isAuthenticated ? (
@@ -123,6 +130,7 @@ export default function Home() {
           selectedLocationId={selectedLocationId}
           onSelectLocation={handleLocationSelect}
           onAddLocationClick={handleMapClick}
+          flyToCoords={flyToCoords}
         />
       </div>
 
