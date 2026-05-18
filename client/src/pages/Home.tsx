@@ -25,7 +25,6 @@ import {
 import { Input } from "@/components/ui/input";
 
 export default function Home() {
-  const { data: locations = [], isLoading } = useLocations();
   const { user, isAuthenticated, logout, login, isLoggingIn } = useAuth();
   
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
@@ -56,12 +55,33 @@ export default function Home() {
     setUsername("");
   };
 
-  if (isLoading) {
+  const { data: locations = [], isLoading: isLoadingLocations, isError, error } = useLocations();
+
+  if (isLoadingLocations) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
           <p className="text-muted-foreground font-medium animate-pulse">地図を読み込んでいます...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4 max-w-sm text-center">
+          <p className="text-xl font-bold text-destructive">読み込みエラー</p>
+          <p className="text-muted-foreground text-sm">
+            サーバーへの接続に失敗しました。しばらくしてから再度お試しください。
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            再読み込み
+          </button>
         </div>
       </div>
     );

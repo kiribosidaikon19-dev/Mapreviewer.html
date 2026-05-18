@@ -64,18 +64,28 @@ export async function registerRoutes(
 
   // Locations
   app.get(api.locations.list.path, async (req, res) => {
-    const locations = await storage.getLocations();
-    res.json(locations);
+    try {
+      const locations = await storage.getLocations();
+      res.json(locations);
+    } catch (err) {
+      console.error("[Locations List Error]:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 
   app.get(api.locations.get.path, async (req, res) => {
-    const id = Number(req.params.id);
-    if (isNaN(id)) return res.status(404).json({ message: "Invalid ID" });
+    try {
+      const id = Number(req.params.id);
+      if (isNaN(id)) return res.status(404).json({ message: "Invalid ID" });
 
-    const location = await storage.getLocation(id);
-    if (!location) return res.status(404).json({ message: "Location not found" });
+      const location = await storage.getLocation(id);
+      if (!location) return res.status(404).json({ message: "Location not found" });
 
-    res.json(location);
+      res.json(location);
+    } catch (err) {
+      console.error("[Location Get Error]:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 
   app.post(api.locations.create.path, isAuthenticated, async (req, res) => {
